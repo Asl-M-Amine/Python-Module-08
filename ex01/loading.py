@@ -2,6 +2,7 @@
 
 import sys
 import importlib
+import importlib.util
 from typing import Any
 
 REQUIRED_PACKAGES = ["pandas", "numpy", "matplotlib", "requests"]
