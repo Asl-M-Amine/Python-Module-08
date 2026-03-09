@@ -4,16 +4,22 @@ import sys
 import importlib
 from typing import Any
 
+REQUIRED_PACKAGES = ["pandas", "numpy", "matplotlib", "requests"]
 
-REQUIRED_PACKAGES = ["pandas", "numpy", "matplotlib"]
+PACKAGE_PURPOSE = {
+    "pandas": "Data manipulation ready",
+    "numpy": "Numerical computing ready",
+    "matplotlib": "Visualization ready",
+    "requests": "Network access ready",
+}
 
 
 def check_dependencies() -> dict[str, Any]:
     """
     Check if required packages are installed.
-    Returns a dictionary of loaded modules.
+    Return loaded modules.
     """
-    loaded_modules: dict[str, Any] = {}
+    modules: dict[str, Any] = {}
 
     print("LOADING STATUS: Loading programs...")
     print("Checking dependencies:")
@@ -23,33 +29,44 @@ def check_dependencies() -> dict[str, Any]:
 
         if spec is None:
             print(f"[MISSING] {package}")
-            print("\nInstall dependencies with:")
+            print("\nInstall dependencies using pip:")
             print("pip install -r requirements.txt")
-            print("or")
+            print("\nOr install using Poetry:")
             print("poetry install")
             sys.exit(1)
 
         module = importlib.import_module(package)
         version = getattr(module, "__version__", "unknown")
-        print(f"[OK] {package} ({version}) - ready")
 
-        loaded_modules[package] = module
+        purpose = PACKAGE_PURPOSE.get(package, "ready")
+        print(f"[OK] {package} ({version}) - {purpose}")
 
-    return loaded_modules
+        modules[package] = module
+
+    return modules
+
+
+def show_dependency_management_info() -> None:
+    """
+    Explain pip vs Poetry dependency management.
+    """
+    print("\nDependency Management Information:")
+    print("- pip installs packages listed in requirements.txt")
+    print("- Poetry uses pyproject.toml to manage dependencies and environments")
+    print("- Poetry also handles virtual environments automatically")
 
 
 def generate_matrix_data(numpy_module: Any, size: int = 1000) -> Any:
     """
-    Generate simulated matrix data using numpy.
+    Generate simulated matrix signal data.
     """
     rng = numpy_module.random.default_rng()
-    data = rng.normal(loc=50, scale=10, size=size)
-    return data
+    return rng.normal(loc=50, scale=10, size=size)
 
 
 def analyze_data(pandas_module: Any, data: Any) -> Any:
     """
-    Analyze data using pandas.
+    Analyze matrix data using pandas.
     """
     df = pandas_module.DataFrame({"matrix_signal": data})
 
@@ -65,7 +82,7 @@ def analyze_data(pandas_module: Any, data: Any) -> Any:
 
 def create_visualization(matplotlib_module: Any, df: Any) -> None:
     """
-    Create a simple histogram visualization.
+    Create histogram visualization.
     """
     plt = matplotlib_module.pyplot
 
@@ -80,19 +97,18 @@ def create_visualization(matplotlib_module: Any, df: Any) -> None:
     output_file = "matrix_analysis.png"
     plt.savefig(output_file)
 
-    print(f"\nAnalysis complete!")
+    print("\nAnalysis complete!")
     print(f"Results saved to: {output_file}")
 
 
 def main() -> None:
-    """
-    Main program execution.
-    """
     modules = check_dependencies()
 
     numpy_module = modules["numpy"]
     pandas_module = modules["pandas"]
     matplotlib_module = modules["matplotlib"]
+
+    show_dependency_management_info()
 
     data = generate_matrix_data(numpy_module)
     df = analyze_data(pandas_module, data)

@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "matrix-loader"
+name = "loading"
 version = "0.1.0"
-description = "Matrix data analysis tool"
+description = "Matrix data analysis program"
 authors = ["student"]
 
 [tool.poetry.dependencies]
